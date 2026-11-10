@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   browser-check:
@@ -28,4 +28,28 @@ jobs:
           npm install --no-save playwright
           npx playwright install --with-deps chromium
       - name: Test the published NOESIS website
+        id: test
+        continue-on-error: true
         run: node tests/noesis-live-check.mjs
+      - name: Publish machine-readable report for ChatGPT
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f /tmp/noesis-report.json ]; then
+            printf '{"status":"failed","errors":["The browser test did not produce a report."]}' > /tmp/noesis-report.json
+          fi
+          git fetch origin test-reports || true
+          if git show-ref --verify --quiet refs/remotes/origin/test-reports; then
+            git switch -C test-reports origin/test-reports
+          else
+            git switch --orphan test-reports
+            git rm -rf . >/dev/null 2>&1 || true
+          fi
+          cp /tmp/noesis-report.json latest-report.json
+          git add latest-report.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Update NOESIS browser test report" || true
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push origin test-reports
+      - name: Fail the workflow when browser tests fail
+        if: steps.test.outcome == 'failure'
+        run: exit 1
