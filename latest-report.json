@@ -1,7 +1,7 @@
 {
   "site": "https://amaceus777.github.io/Pa-chat-GPT/",
-  "checkedAt": "2026-11-10T13:42:36.088Z",
-  "status": "passed",
+  "checkedAt": "2026-11-10T13:42:53.279Z",
+  "status": "failed",
   "checks": [
     {
       "name": "GitHub Pages responde",
@@ -42,23 +42,10 @@
       "name": "Comparador de estudios",
       "status": "PASS",
       "details": "Dos publicaciones comparadas"
-    },
-    {
-      "name": "Filtro de acceso abierto",
-      "status": "PASS",
-      "details": "21 resultados; limitación Crossref explicada"
-    },
-    {
-      "name": "Filtro por año y orden cronológico",
-      "status": "PASS",
-      "details": "15 resultados"
-    },
-    {
-      "name": "Errores JavaScript",
-      "status": "PASS",
-      "details": "Ningún error no controlado"
     }
   ],
-  "errors": [],
-  "finishedAt": "2026-11-10T13:42:45.513Z"
+  "errors": [
+    "Error: Aviso del filtro OA ausente o incompleto. Estado recibido: 21 resultados. Fuentes consultadas correctamente. Crossref omitido: no proporciona un indicador fiable de acceso abierto.\n    at file:///home/runner/work/Pa-chat-GPT/Pa-chat-GPT/tests/noesis-live-check.mjs:81:11"
+  ],
+  "finishedAt": "2026-11-10T13:42:58.094Z"
 }
