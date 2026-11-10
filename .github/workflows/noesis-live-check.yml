@@ -9,6 +9,10 @@ on:
       - '.github/workflows/noesis-live-check.yml'
   workflow_dispatch:
 
+concurrency:
+  group: noesis-live-check-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
