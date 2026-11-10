@@ -50,10 +50,21 @@ try {
     };
   }
 
+  const sourceResults = {};
   for (const source of ['openalex', 'crossref', 'epmc']) {
     const result = await search(source);
-    if (!result.count) throw new Error(`${source} no devolvió resultados: ${result.status}`);
+    sourceResults[source] = result;
+    if (!result.count) {
+      if (/HTTP (429|5\\d\\d)/.test(result.status)) {
+        check(`Búsqueda ${source}`, 'WARN', `API temporalmente no disponible tras reintentos: ${result.status}`);
+        continue;
+      }
+      throw new Error(`${source} no devolvió resultados: ${result.status}`);
+    }
     check(`Búsqueda ${source}`, 'PASS', `${result.count} resultados`);
+  }
+  if (!sourceResults.openalex?.count && !sourceResults.crossref?.count && !sourceResults.epmc?.count) {
+    throw new Error('Ninguna fuente académica respondió con resultados.');
   }
 
   const combined = await search('all');
@@ -76,7 +87,7 @@ try {
 
   const oa = await search('all', { openAccess: true });
   if (!oa.count) throw new Error(`Filtro de acceso abierto sin resultados: ${oa.status}`);
-  const oaNotice = oa.status.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
+  const oaNotice = oa.status.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   if (!oaNotice.includes('crossref omitido') || !oaNotice.includes('indicador fiable de acceso abierto')) {
     throw new Error(`Aviso del filtro OA ausente o incompleto. Estado recibido: ${oa.status}`);
   }
