@@ -1,0 +1,51 @@
+{
+  "site": "https://amaceus777.github.io/Pa-chat-GPT/",
+  "checkedAt": "2026-11-10T13:32:26.759Z",
+  "status": "failed",
+  "checks": [
+    {
+      "name": "GitHub Pages responde",
+      "status": "PASS",
+      "details": "HTTP 200"
+    },
+    {
+      "name": "Interfaz principal",
+      "status": "PASS",
+      "details": "Título y página cargados"
+    },
+    {
+      "name": "Búsqueda openalex",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda crossref",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda epmc",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda combinada y deduplicación",
+      "status": "PASS",
+      "details": "45 resultados; 45 resultados. Fuentes consultadas correctamente."
+    },
+    {
+      "name": "Ficha y referencia APA",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "name": "Comparador de estudios",
+      "status": "PASS",
+      "details": "Dos publicaciones comparadas"
+    }
+  ],
+  "errors": [
+    "Error: No se explica la limitación del filtro OA en Crossref\n    at file:///home/runner/work/Pa-chat-GPT/Pa-chat-GPT/tests/noesis-live-check.mjs:79:54"
+  ],
+  "finishedAt": "2026-11-10T13:32:34.015Z"
+}
