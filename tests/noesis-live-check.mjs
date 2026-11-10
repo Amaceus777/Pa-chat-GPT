@@ -76,7 +76,10 @@ try {
 
   const oa = await search('all', { openAccess: true });
   if (!oa.count) throw new Error(`Filtro de acceso abierto sin resultados: ${oa.status}`);
-  if (!oa.status.includes('Crossref omitido')) throw new Error('No se explica la limitación del filtro OA en Crossref');
+  const oaNotice = oa.status.normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').toLowerCase();
+  if (!oaNotice.includes('crossref omitido') || !oaNotice.includes('indicador fiable de acceso abierto')) {
+    throw new Error(`Aviso del filtro OA ausente o incompleto. Estado recibido: ${oa.status}`);
+  }
   check('Filtro de acceso abierto', 'PASS', `${oa.count} resultados; limitación Crossref explicada`);
 
   const year = await search('openalex', { year: '2020' });
