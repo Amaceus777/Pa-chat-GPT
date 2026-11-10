@@ -17,7 +17,26 @@
 const el=id=>document.getElementById(id);let records=[],chosen=[];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const clean=s=>(s||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
-async function json(url){const r=await fetch(url,{headers:{Accept:"application/json"}});if(!r.ok)throw Error("HTTP "+r.status);return r.json()}
+async function json(url){
+  let lastError;
+  for(let attempt=0;attempt<3;attempt++){
+    try{
+      const r=await fetch(url,{headers:{Accept:"application/json"}});
+      if(r.ok)return await r.json();
+      const error=Error("HTTP "+r.status);
+      if(r.status!==429&&r.status<500)throw error;
+      lastError=error;
+      const retryAfter=Number(r.headers.get("Retry-After"));
+      const delay=Number.isFinite(retryAfter)&&retryAfter>0?Math.min(retryAfter*1000,5000):700*Math.pow(2,attempt);
+      if(attempt<2)await new Promise(resolve=>setTimeout(resolve,delay));
+    }catch(error){
+      lastError=error;
+      if(/^HTTP \d+$/.test(error.message)&&!(/HTTP (429|5\d\d)/.test(error.message)))throw error;
+      if(attempt<2)await new Promise(resolve=>setTimeout(resolve,700*Math.pow(2,attempt)));
+    }
+  }
+  throw lastError||Error("No se pudo consultar la fuente");
+}
 function abstractOA(x){const idx=x.abstract_inverted_index;if(!idx)return "";const a=[];for(const [w,ps] of Object.entries(idx))for(const p of ps)a[p]=w;return a.filter(Boolean).join(" ")}
 function norm(source,x){if(source==="openalex")return {title:x.title||"Sin título",authors:(x.authorships||[]).map(a=>a.author?.display_name).filter(Boolean),year:x.publication_year,venue:x.primary_location?.source?.display_name,doi:x.doi,url:x.doi||x.id,abstract:abstractOA(x),type:x.type,oa:!!x.open_access?.is_oa,citations:x.cited_by_count||0,source:"OpenAlex"};
 if(source==="crossref")return {title:x.title?.[0]||"Sin título",authors:(x.author||[]).map(a=>[a.given,a.family].filter(Boolean).join(" ")),year:x.published?.["date-parts"]?.[0]?.[0],venue:x["container-title"]?.[0],doi:x.DOI,url:x.URL,abstract:clean(x.abstract),type:x.type,oa:false,citations:x["is-referenced-by-count"]||0,source:"Crossref"};
