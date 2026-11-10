@@ -55,7 +55,7 @@ try {
     const result = await search(source);
     sourceResults[source] = result;
     if (!result.count) {
-      if (/HTTP (429|5\\d\\d)/.test(result.status)) {
+      if (/HTTP (429|5\d\d)/.test(result.status)) {
         check(`Búsqueda ${source}`, 'WARN', `API temporalmente no disponible tras reintentos: ${result.status}`);
         continue;
       }
