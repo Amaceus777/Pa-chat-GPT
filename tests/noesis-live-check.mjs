@@ -97,6 +97,26 @@ try {
   if (!year.count) throw new Error(`Filtro por año sin resultados: ${year.status}`);
   check('Filtro por año y orden cronológico', 'PASS', `${year.count} resultados`);
 
+  const bridgePage = await browser.newPage();
+  const bridgeResult = await bridgePage.evaluate(async base => new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('NOESIS no envió resultados al documento padre.')), 90000);
+    const receive = event => {
+      if (event.origin !== location.origin || event.data?.type !== 'NOESIS_RESULTS') return;
+      clearTimeout(timer);
+      window.removeEventListener('message', receive);
+      resolve({ query: event.data.query, count: event.data.records?.length || 0 });
+    };
+    window.addEventListener('message', receive);
+    const frame = document.createElement('iframe');
+    frame.src = base + '?q=' + encodeURIComponent('sleep memory') + '&embed=ascension';
+    document.body.appendChild(frame);
+  }), BASE);
+  if (bridgeResult.query !== 'sleep memory' || !bridgeResult.count) {
+    throw new Error('Puente de investigación incompleto: ' + JSON.stringify(bridgeResult));
+  }
+  check('Puente de investigación ASCENSION', 'PASS', bridgeResult.count + ' estudios enviados al padre');
+  await bridgePage.close();
+
   if (pageErrors.length) throw new Error(`Errores JavaScript del navegador: ${pageErrors.join(' | ')}`);
   check('Errores JavaScript', 'PASS', 'Ningún error no controlado');
   report.status = 'passed';
