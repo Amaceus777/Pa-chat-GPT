@@ -121,6 +121,7 @@ try {
     throw new Error('Puente de investigación incompleto: ' + JSON.stringify({ bridgeResult, frameState }));
   }
   check('Puente de investigación ASCENSION', 'PASS', bridgeResult.records.length + ' estudios enviados al padre');
+  await bridgePage.close();
 
 
   if (pageErrors.length) throw new Error(`Errores JavaScript del navegador: ${pageErrors.join(' | ')}`);
