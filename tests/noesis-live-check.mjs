@@ -98,24 +98,30 @@ try {
   check('Filtro por año y orden cronológico', 'PASS', `${year.count} resultados`);
 
   const bridgePage = await browser.newPage();
-  const bridgeResult = await bridgePage.evaluate(async base => new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error('NOESIS no envió resultados al documento padre.')), 90000);
-    const receive = event => {
-      if (event.origin !== location.origin || event.data?.type !== 'NOESIS_RESULTS') return;
-      clearTimeout(timer);
-      window.removeEventListener('message', receive);
-      resolve({ query: event.data.query, count: event.data.records?.length || 0 });
-    };
-    window.addEventListener('message', receive);
+  await bridgePage.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await bridgePage.evaluate(() => window.addEventListener('message', event => {
+    if (event.data?.type === 'NOESIS_RESULTS') window.__noesisBridgeData = event.data;
+  }));
+  await bridgePage.evaluate(base => {
     const frame = document.createElement('iframe');
+    frame.id = 'academy-noesis-frame';
     frame.src = base + '?q=' + encodeURIComponent('sleep memory') + '&embed=ascension';
     document.body.appendChild(frame);
-  }), BASE);
-  if (bridgeResult.query !== 'sleep memory' || !bridgeResult.count) {
-    throw new Error('Puente de investigación incompleto: ' + JSON.stringify(bridgeResult));
+  }, BASE);
+  const embeddedFrame = bridgePage.frames().find(frame => frame.url().includes('embed=ascension'));
+  if (!embeddedFrame) throw new Error('No se creó el iframe de NOESIS.');
+  await embeddedFrame.waitForSelector('body.embedded', { timeout: 30000 });
+  await embeddedFrame.waitForFunction(() => {
+    const button = document.querySelector('#go');
+    return button && !button.disabled && !document.querySelector('#status')?.textContent.includes('Consultando');
+  }, null, { timeout: 90000 });
+  const bridgeResult = await bridgePage.waitForFunction(() => window.__noesisBridgeData || null, null, { timeout: 15000 }).then(h => h.jsonValue());
+  if (bridgeResult?.query !== 'sleep memory' || !bridgeResult.records?.length) {
+    const frameState = await embeddedFrame.evaluate(() => ({ body: document.body.className, status: document.querySelector('#status')?.textContent, results: document.querySelectorAll('#results article').length }));
+    throw new Error('Puente de investigación incompleto: ' + JSON.stringify({ bridgeResult, frameState }));
   }
-  check('Puente de investigación ASCENSION', 'PASS', bridgeResult.count + ' estudios enviados al padre');
-  await bridgePage.close();
+  check('Puente de investigación ASCENSION', 'PASS', bridgeResult.records.length + ' estudios enviados al padre');
+
 
   if (pageErrors.length) throw new Error(`Errores JavaScript del navegador: ${pageErrors.join(' | ')}`);
   check('Errores JavaScript', 'PASS', 'Ningún error no controlado');
