@@ -1,7 +1,7 @@
 {
   "site": "https://amaceus777.github.io/Pa-chat-GPT/",
-  "checkedAt": "2026-11-13T14:04:49.654Z",
-  "status": "passed",
+  "checkedAt": "2026-11-13T14:07:04.442Z",
+  "status": "failed",
   "checks": [
     {
       "name": "GitHub Pages responde",
@@ -52,13 +52,10 @@
       "name": "Filtro por año y orden cronológico",
       "status": "PASS",
       "details": "15 resultados"
-    },
-    {
-      "name": "Errores JavaScript",
-      "status": "PASS",
-      "details": "Ningún error no controlado"
     }
   ],
-  "errors": [],
-  "finishedAt": "2026-11-13T14:05:03.324Z"
+  "errors": [
+    "page.evaluate: Error: NOESIS no envió resultados al documento padre.\n    at eval (eval at evaluate (:370:30), <anonymous>:2:43)\n    at /home/runner/work/Pa-chat-GPT/Pa-chat-GPT/tests/noesis-live-check.mjs:101:41"
+  ],
+  "finishedAt": "2026-11-13T14:08:47.430Z"
 }
