@@ -102,13 +102,14 @@ try {
   await bridgePage.evaluate(() => window.addEventListener('message', event => {
     if (event.data?.type === 'NOESIS_RESULTS') window.__noesisBridgeData = event.data;
   }));
+  const frameAttached = bridgePage.waitForEvent('frameattached');
   await bridgePage.evaluate(base => {
     const frame = document.createElement('iframe');
     frame.id = 'academy-noesis-frame';
     frame.src = base + '?q=' + encodeURIComponent('sleep memory') + '&embed=ascension';
     document.body.appendChild(frame);
   }, BASE);
-  const embeddedFrame = bridgePage.frames().find(frame => frame.url().includes('embed=ascension'));
+  const embeddedFrame = await frameAttached;
   if (!embeddedFrame) throw new Error('No se creó el iframe de NOESIS.');
   await embeddedFrame.waitForSelector('body.embedded', { timeout: 30000 });
   await embeddedFrame.waitForFunction(() => {
