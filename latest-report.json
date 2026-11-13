@@ -1,7 +1,7 @@
 {
   "site": "https://amaceus777.github.io/Pa-chat-GPT/",
-  "checkedAt": "2026-11-13T14:10:58.031Z",
-  "status": "failed",
+  "checkedAt": "2026-11-13T14:12:42.150Z",
+  "status": "passed",
   "checks": [
     {
       "name": "GitHub Pages responde",
@@ -52,10 +52,18 @@
       "name": "Filtro por año y orden cronológico",
       "status": "PASS",
       "details": "15 resultados"
+    },
+    {
+      "name": "Puente de investigación ASCENSION",
+      "status": "PASS",
+      "details": "10 estudios enviados al padre"
+    },
+    {
+      "name": "Errores JavaScript",
+      "status": "PASS",
+      "details": "Ningún error no controlado"
     }
   ],
-  "errors": [
-    "Error: No se creó el iframe de NOESIS.\n    at file:///home/runner/work/Pa-chat-GPT/Pa-chat-GPT/tests/noesis-live-check.mjs:112:29"
-  ],
-  "finishedAt": "2026-11-13T14:11:11.127Z"
+  "errors": [],
+  "finishedAt": "2026-11-13T14:13:02.075Z"
 }
