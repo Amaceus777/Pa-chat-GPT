@@ -1,1 +1,64 @@
-{"status":"failed","errors":["The browser test did not produce a report."]}
+{
+  "site": "https://amaceus777.github.io/Pa-chat-GPT/",
+  "checkedAt": "2026-11-13T14:04:49.654Z",
+  "status": "passed",
+  "checks": [
+    {
+      "name": "GitHub Pages responde",
+      "status": "PASS",
+      "details": "HTTP 200"
+    },
+    {
+      "name": "Interfaz principal",
+      "status": "PASS",
+      "details": "Título y página cargados"
+    },
+    {
+      "name": "Búsqueda openalex",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda crossref",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda epmc",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Búsqueda combinada y deduplicación",
+      "status": "PASS",
+      "details": "45 resultados; 45 resultados. Fuentes consultadas correctamente."
+    },
+    {
+      "name": "Ficha y referencia APA",
+      "status": "PASS",
+      "details": ""
+    },
+    {
+      "name": "Comparador de estudios",
+      "status": "PASS",
+      "details": "Dos publicaciones comparadas"
+    },
+    {
+      "name": "Filtro de acceso abierto",
+      "status": "PASS",
+      "details": "21 resultados; limitación Crossref explicada"
+    },
+    {
+      "name": "Filtro por año y orden cronológico",
+      "status": "PASS",
+      "details": "15 resultados"
+    },
+    {
+      "name": "Errores JavaScript",
+      "status": "PASS",
+      "details": "Ningún error no controlado"
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-11-13T14:05:03.324Z"
+}
